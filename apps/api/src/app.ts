@@ -1,12 +1,13 @@
 import Fastify from 'fastify';
-import { healthRoutes } from './routes/healthRoutes';
-import { repositoryRoutes } from './routes/repositoryRoutes';
+import { healthRoutes } from "./routes/healthRoutes.js";
+import { repositoryRoutes } from "./routes/repositoryRoutes.js";
+import { pullRequestRoutes } from "./routes/pullRequestRoutes.js";
 
 export const app = Fastify();
 
 app.register(healthRoutes);
 app.register(repositoryRoutes);
-
+app.register(pullRequestRoutes);
 async function start() {
     try {
         await app.listen({

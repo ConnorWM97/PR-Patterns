@@ -1,12 +1,5 @@
-export async function getUserRepositoriess(userId: number) {
-    return [
-        {
-            id: 1,
-            name: "PR Coach",
-        },
-        {
-            id: 2,
-            name: "Portfolio"
-        },
-    ];
+import { findRepositoriesByUserId } from "../repositories/repositoryRepository.js";
+
+export async function getUserRepositories(userId: number) {
+    return findRepositoriesByUserId(userId);
 }

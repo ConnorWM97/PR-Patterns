@@ -5,7 +5,7 @@
 we are committed to fostering a welcoming, respectful, and inclusive community for everyone, regardless of experience level,
 background, identity, or perspective.
 
-Our goal is to make PR Coach a place where people can learn, collaberate, and improve together.
+Our goal is to make PR Patterns a place where people can learn, collaberate, and improve together.
 
 ## Expected Behavior
 
@@ -50,7 +50,7 @@ This Code of Conduct applies to:
 - Pull requests
 - Discussions
 - Project documentation
-- Community spaces associated with PR Coach
+- Community spaces associated with PR Patterns
 
 ## Reporting Concerns
 
@@ -73,7 +73,7 @@ Depending on the severity of a violation, maintainers may:
 
 ## Our Philosophy
 
-PR Coach exists to help developers grow.
+PR Patterns exists to help developers grow.
 
 We believe that curiosity, kindness, and continuous learning lead to better software - and to better engineering communities.
 

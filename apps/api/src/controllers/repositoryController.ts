@@ -1,7 +1,7 @@
-import { getUserRepositories } from '../services/repositoryService';
+import { getUserRepositories } from "../services/repositoryService.js";
 
 export async function getRepositories(request) {
-    const userId = request.user.id;
+    const userId = Number(request.query.userId);
 
     const repositories = await getUserRepositories(userId);
 
