@@ -8,3 +8,12 @@ export async function findRepositoriesByUserId(userId: number) {
 
     return result.rows;
 }
+
+export async function createRepository(userId: number, name: string) {
+    const result = await pool.query(
+        "INSERT INTO repositories (user_id, name) VALUES ($1, $2) RETURNING id, name",
+        [userId, name],
+    );
+
+    return result.rows[0];
+}
