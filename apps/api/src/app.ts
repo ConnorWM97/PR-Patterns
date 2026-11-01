@@ -10,8 +10,10 @@ app.register(repositoryRoutes);
 app.register(pullRequestRoutes);
 async function start() {
     try {
+        const port = Number(process.env.PORT ?? 3000);
+
         await app.listen({
-            port: 3000,
+            port,
             host: "0.0.0.0",
         });
     } catch (error) {
