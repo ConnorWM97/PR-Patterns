@@ -19,8 +19,15 @@ function isMissingPullRequest(
 
 export async function getReviewComments(
     request: FastifyRequest<{ Querystring: { pullRequestId: number } }>,
+    reply: FastifyReply,
 ) {
-    return getReviewCommentsForPullRequest(request.query.pullRequestId);
+    const comments = await getReviewCommentsForPullRequest(request.query.pullRequestId);
+
+    if (comments === null) {
+        return reply.code(404).send({ message: "Pull request not found" });
+    }
+
+    return comments;
 }
 
 export async function createReviewComment(
