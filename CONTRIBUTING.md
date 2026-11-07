@@ -13,7 +13,10 @@ for small bug fixes, documentation improvements, or minor enhancements, feel fre
 
 ## Development Philosophy
 
+
+
 ### PR Patterns values:
+
 - Simplicity over cleverness
 - Readable code over short code
 - Small, focused pull requests
@@ -21,17 +24,22 @@ for small bug fixes, documentation improvements, or minor enhancements, feel fre
 - Automated testing where practical
 - Constructive code reviews
 
+
+
 ### When making changes, ask yourself:
+
 - Is this easy to understand?
 - Would a new contributor understand this code several months from now?
 - Does this change make the project simpler or more complicated?
+
+
 
 ## Setting up the project
 
 1. Fork the repository.
 2. Clone your fork.
 3. Create a new branch for your work.
-4. Start PostgreSQL. The API in `apps/api/src/db.ts` expects database `pr_patterns` on `localhost:5432`, user `postgres`, password `postgres`.
+4. Start PostgreSQL. The API reads its connection from environment variables (`PGHOST`, `PGUSER`, `PGPASSWORD`, `PGDATABASE`). Local development uses database `pr_patterns` on `localhost:5432`, user `postgres`, password `postgres`.
 
 If the container does not exist yet:
 
@@ -50,7 +58,7 @@ If it already exists:
 docker start pr-patterns-db
 ```
 
-5. Apply the schema scripts in order, from `apps/api`. `psql` runs inside the container.
+1. Apply the schema scripts in order, from `apps/api`. `psql` runs inside the container.
 
 ```bash
 cd apps/api
@@ -60,14 +68,18 @@ docker exec -i pr-patterns-db psql -U postgres -d pr_patterns < sql/001_review_c
 
 `000` and `001` use `CREATE TABLE IF NOT EXISTS`, so running them again skips tables that are already there.
 
-6. Install dependencies and start the API, from `apps/api`.
+1. Install dependencies and start the API, from `apps/api`. Export the database settings in the same terminal before `npm run dev`.
 
 ```bash
+export PGHOST=localhost
+export PGUSER=postgres
+export PGPASSWORD=postgres
+export PGDATABASE=pr_patterns
 npm install
 npm run dev
 ```
 
-The server listens on port `3000`.
+The server listens on port `3000`. If any of the four variables are missing, the API exits instead of starting.
 
 ## Coding guidelines
 
@@ -78,20 +90,26 @@ The server listens on port `3000`.
 - Avoid unnecessary dependencies.
 - Add comments only when they explain **why**, not **what**.
 
+
+
 ## Pull Requests
 
 Please keep pull requests focused on a single purpose.
 
 Before submitting, verify that:
+
 - Your code builds successfully.
 - Existing tests pass.
 - New functionality includes tests when appropriate.
 - Documentation has been updated if behavior has changed.
 - Pull request descriptions clearly explain the motivation behind the change.
 
+
+
 ## Reporting bugs
 
 When opening a bug report, please include:
+
 - Expected behavior
 - Actual behavior
 - Steps to reproduce
@@ -99,15 +117,20 @@ When opening a bug report, please include:
 - Browser and operating system
 - Relevant error messages
 
+
+
 ## Suggesting features
 
 feature requests are welcome.
 
 When suggesting a feature, please explain:
+
 - The problem you're trying to solve
 - Your proposed solution
 - Alternative solutions you considered
 - Any trade-offs you see
+
+
 
 ## Code review
 

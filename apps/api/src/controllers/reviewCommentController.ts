@@ -32,13 +32,22 @@ export async function getReviewComments(
 
 export async function createReviewComment(
     request: FastifyRequest<{
-        Body: { pullRequestId: number; body: string };
+        Body: {
+            pullRequestId: number;
+            githubId: number;
+            author: string;
+            createdAt: string;
+            body: string;
+        };
     }>,
     reply: FastifyReply,
 ) {
     try {
         return await createReviewCommentForPullRequest(
             request.body.pullRequestId,
+            request.body.githubId,
+            request.body.author,
+            request.body.createdAt,
             request.body.body,
         );
     } catch (error) {

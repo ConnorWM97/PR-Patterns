@@ -10,12 +10,12 @@ export async function pullRequestRoutes(fastify: FastifyInstance) {
         schema: {
             body: {
                 type: "object",
-                required: ["repositoryId", "githubid", "author", "createdAt", "title"],
+                required: ["repositoryId", "githubId", "author", "createdAt", "title"],
                 properties: {
                     repositoryId: { type: "integer", minimum: 1 },
-                    githubid: { type: "integer", minimum: 1 },
+                    githubId: { type: "integer", minimum: 1 },
                     author: { type: "string", minLength: 1 },
-                    createdAt: { type: "string", minLength: 1 },
+                    createdAt: { type: "string", minLength: 1, format: "date-time" },
                     title: { type: "string", minLength: 1 },
                 },
             },
