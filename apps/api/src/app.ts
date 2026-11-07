@@ -3,7 +3,7 @@ import { healthRoutes } from "./routes/healthRoutes.js";
 import { repositoryRoutes } from "./routes/repositoryRoutes.js";
 import { pullRequestRoutes } from "./routes/pullRequestRoutes.js";
 
-export const app = Fastify();
+export const app = Fastify({ logger: true });
 
 app.register(healthRoutes);
 app.register(repositoryRoutes);
