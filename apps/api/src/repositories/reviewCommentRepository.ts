@@ -2,7 +2,7 @@ import { pool } from "../db.js";
 
 export async function findReviewCommentsByPullRequestId(pullRequestId: number) {
     const result = await pool.query(
-        "SELECT id, body FROM review_comments WHERE pull_request_id = $1",
+        "SELECT id, github_id, author, created_at, body FROM review_comments WHERE pull_request_id = $1",
         [pullRequestId],
     );
 
