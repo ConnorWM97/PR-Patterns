@@ -2,7 +2,7 @@
 
 first off, thank you for your interest in contributing to this project!
 PR Patterns is made to help developers improve their pull requests over time by learning from previous pull requests.
-Whether you are fixing a typo , reporting a bug, improving documentation, or adding a feature, your contributions are greatly appreciated.
+Whether you are fixing a typo, reporting a bug, improving documentation, or adding a feature, your contributions are greatly appreciated.
 
 ## Before you start
 
@@ -23,19 +23,51 @@ for small bug fixes, documentation improvements, or minor enhancements, feel fre
 
 ### When making changes, ask yourself:
 - Is this easy to understand?
-- Would a new contributer understand this code several months from now?
+- Would a new contributor understand this code several months from now?
 - Does this change make the project simpler or more complicated?
 
 ## Setting up the project
 
 1. Fork the repository.
 2. Clone your fork.
-3. Install Dependencies.
-4. Create a new branch for your work.
-5. Run the project locally.
-6. Verify that all tests pass before submitting your changes.
+3. Create a new branch for your work.
+4. Start PostgreSQL. The API in `apps/api/src/db.ts` expects database `pr_patterns` on `localhost:5432`, user `postgres`, password `postgres`.
 
-   (Detailed setup instructions will be added as the project grows.)
+If the container does not exist yet:
+
+```bash
+docker run -d --name pr-patterns-db \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=pr_patterns \
+  -p 5432:5432 \
+  postgres
+```
+
+If it already exists:
+
+```bash
+docker start pr-patterns-db
+```
+
+5. Apply the schema scripts in order, from `apps/api`. `psql` runs inside the container.
+
+```bash
+cd apps/api
+docker exec -i pr-patterns-db psql -U postgres -d pr_patterns < sql/000_init.sql
+docker exec -i pr-patterns-db psql -U postgres -d pr_patterns < sql/001_review_comments.sql
+```
+
+These scripts use `CREATE TABLE IF NOT EXISTS`, so running them again skips tables that are already there.
+
+6. Install dependencies and start the API, from `apps/api`.
+
+```bash
+npm install
+npm run dev
+```
+
+The server listens on port `3000`.
 
 ## Coding guidelines
 
@@ -63,7 +95,7 @@ When opening a bug report, please include:
 - Expected behavior
 - Actual behavior
 - Steps to reproduce
-- Screenshots (if applicable
+- Screenshots (if applicable)
 - Browser and operating system
 - Relevant error messages
 
@@ -79,7 +111,7 @@ When suggesting a feature, please explain:
 
 ## Code review
 
-Code reviews are inteded to improve the project, not criticize contributers.
+Code reviews are intended to improve the project, not criticize contributors.
 
 Please assume positive intent and provide respectful, constructive feedback.
 
