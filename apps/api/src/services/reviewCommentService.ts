@@ -16,7 +16,10 @@ export async function getReviewCommentsForPullRequest(pullRequestId: number) {
 
 export async function createReviewCommentForPullRequest(
     pullRequestId: number,
+    githubId: number,
+    author: string,
+    createdAt: string,
     body: string,
 ) {
-    return createReviewComment(pullRequestId, body);
+    return createReviewComment(pullRequestId, githubId, author, createdAt, body);
 }
