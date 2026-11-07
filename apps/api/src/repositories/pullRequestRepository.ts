@@ -9,6 +9,15 @@ export async function findPullRequestsByRepositoryId(repositoryId: number) {
     return result.rows;
 }
 
+export async function findPullRequestById(id: number) {
+    const result = await pool.query(
+        "SELECT id FROM pull_requests WHERE id = $1",
+        [id],
+    );
+
+    return result.rows[0] ?? null;
+}
+
 export async function createPullRequest(repositoryId: number, title: string) {
     const result = await pool.query(
         "INSERT INTO pull_requests (repository_id, title) VALUES ($1, $2) RETURNING id, title",
