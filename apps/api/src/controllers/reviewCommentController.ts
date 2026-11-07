@@ -40,12 +40,21 @@ export async function createReviewComment(
             body: string;
         };
     }>,
+    reply: FastifyReply,
 ) {
-    return createReviewCommentForPullRequest(
-        request.body.pullRequestId,
-        request.body.githubId,
-        request.body.author,
-        request.body.createdAt,
-        request.body.body,
-    );
+    try {
+        return await createReviewCommentForPullRequest(
+            request.body.pullRequestId,
+            request.body.githubId,
+            request.body.author,
+            request.body.createdAt,
+            request.body.body,
+        );
+    } catch (error) {
+        if (isMissingPullRequest(error)) {
+            return reply.code(404).send({ message: "Pull request not found" });
+        }
+
+        throw error;
+    }
 }
