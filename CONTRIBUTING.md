@@ -1,7 +1,7 @@
-# Contributing to PR Coach
+# Contributing to PR Patterns
 
 first off, thank you for your interest in contributing to this project!
-PR Coach is made to help developers improve their pull requests over time by learning from previous pull requests.
+PR Patterns is made to help developers improve their pull requests over time by learning from previous pull requests.
 Whether you are fixing a typo , reporting a bug, improving documentation, or adding a feature, your contributions are greatly appreciated.
 
 ## Before you start
@@ -13,7 +13,7 @@ for small bug fixes, documentation improvements, or minor enhancements, feel fre
 
 ## Development Philosophy
 
-### PR Coach values:
+### PR Patterns values:
 - Simplicity over cleverness
 - Readable code over short code
 - Small, focused pull requests
@@ -88,4 +88,4 @@ Please assume positive intent and provide respectful, constructive feedback.
 If you are unsure about anything, please open a discussion or issue.
 We would rather answer a question early than review a large change that heads in the wrong direction.
 
-Thank you for helping make PR Coach better!
+Thank you for helping make PR Patterns better!
