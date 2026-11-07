@@ -11,7 +11,11 @@ export async function findRepositoriesByUserId(userId: number) {
 
 export async function createRepository(userId: number, name: string) {
     const result = await pool.query(
-        "INSERT INTO repositories (user_id, name) VALUES ($1, $2) RETURNING id, name",
+        `INSERT INTO repositories (user_id, name)
+         VALUES ($1, $2)
+         ON CONFLICT (user_id, name)
+         DO UPDATE SET name = EXCLUDED.name
+         RETURNING id, name`,
         [userId, name],
     );
 

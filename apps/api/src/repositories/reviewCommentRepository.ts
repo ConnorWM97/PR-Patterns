@@ -19,8 +19,14 @@ export async function createReviewComment(
     const result = await pool.query(
         `INSERT INTO review_comments
             (pull_request_id, github_id, author, created_at, body)
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING id, github_id, author, created_at, body`,
+         VALUES ($1, $2, $3, $4, $5)
+         ON CONFLICT (github_id)
+         DO UPDATE SET
+             pull_request_id = EXCLUDED.pull_request_id,
+             author = EXCLUDED.author,
+             created_at = EXCLUDED.created_at,
+             body = EXCLUDED.body
+         RETURNING id, github_id, author, created_at, body`,
         [pullRequestId, githubId, author, createdAt, body],
     );
 
