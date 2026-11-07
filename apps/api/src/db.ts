@@ -7,3 +7,7 @@ export const pool = new Pool({
     password: "postgres",
     database: "pr_patterns",
 });
+
+pool.on("error", (error) => {
+    console.error("Unexpected error on an idle PostgreSQL connection", error);
+});
