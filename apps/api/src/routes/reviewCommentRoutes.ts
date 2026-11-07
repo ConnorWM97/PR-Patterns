@@ -25,7 +25,7 @@ export async function reviewCommentRoutes(fastify: FastifyInstance) {
                     pullRequestId: { type: "integer", minimum: 1},
                     githubId: { type: "integer", minimum: 1},
                     author: { type: "string", minLength: 1 },
-                    createdAt: { type: "string", minLength: 1 },
+                    createdAt: { type: "string", minLength: 1, format: "date-time" },
                     body: { type: "string", minLength: 1 },
                 },
             },

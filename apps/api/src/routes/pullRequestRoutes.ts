@@ -15,7 +15,7 @@ export async function pullRequestRoutes(fastify: FastifyInstance) {
                     repositoryId: { type: "integer", minimum: 1 },
                     githubId: { type: "integer", minimum: 1 },
                     author: { type: "string", minLength: 1 },
-                    createdAt: { type: "string", minLength: 1 },
+                    createdAt: { type: "string", minLength: 1, format: "date-time" },
                     title: { type: "string", minLength: 1 },
                 },
             },
