@@ -9,7 +9,16 @@ export async function getPullRequestsForRepository(repositoryId: number) {
 
 export async function createPullRequestForRepository(
     repositoryId: number,
+    githubId: number,
+    author: string,
+    createdAt: string,
     title: string,
 ) {
-    return createPullRequest(repositoryId, title);
+    return await createPullRequest(
+        repositoryId,
+        githubId,
+        author,
+        createdAt,
+        title,
+    );
 }

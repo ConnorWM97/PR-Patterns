@@ -14,11 +14,20 @@ export async function getPullRequests(
 
 export async function createPullRequest(
     request: FastifyRequest<{
-        Body: { repositoryId: number | string; title: string };
+        Body: {
+            repositoryId: number;
+            githubId: number;
+            author: string;
+            createdAt: string;
+            title: string;
+        };
     }>,
 ) {
-    const repositoryId = Number(request.body.repositoryId);
-    const title = request.body.title;
-
-    return createPullRequestForRepository(repositoryId, title);
+    return createPullRequestForRepository(
+        request.body.repositoryId,
+        request.body.githubId,
+        request.body.author,
+        request.body.createdAt,
+        request.body.title,
+    );
 }
