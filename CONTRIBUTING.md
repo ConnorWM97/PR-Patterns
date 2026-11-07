@@ -56,9 +56,10 @@ docker start pr-patterns-db
 cd apps/api
 docker exec -i pr-patterns-db psql -U postgres -d pr_patterns < sql/000_init.sql
 docker exec -i pr-patterns-db psql -U postgres -d pr_patterns < sql/001_review_comments.sql
+docker exec -i pr-patterns-db psql -U postgres -d pr_patterns < sql/002_review_comment_pull_request_fk.sql
 ```
 
-These scripts use `CREATE TABLE IF NOT EXISTS`, so running them again skips tables that are already there.
+`000` and `001` use `CREATE TABLE IF NOT EXISTS`, so running them again skips tables that are already there. `002` adds the foreign key from `review_comments.pull_request_id` to `pull_requests` once. Running `002` again fails because that constraint already exists.
 
 6. Install dependencies and start the API, from `apps/api`.
 
