@@ -1,7 +1,7 @@
 import { upsertUser } from "../repositories/userRepository.js";
-import { createRepository } from "../repositories/repositoryRepository.js";
-import { createPullRequest } from "../repositories/pullRequestRepository.js";
-import { createReviewComment } from "../repositories/reviewCommentRepository.js";
+import { upsertRepository } from "../repositories/repositoryRepository.js";
+import { upsertPullRequest } from "../repositories/pullRequestRepository.js";
+import { upsertReviewComment } from "../repositories/reviewCommentRepository.js";
 import { githubGet, githubGetAll } from "../services/githubClient.js";
 
 
@@ -31,7 +31,7 @@ export async function importAccount(token: string) {
     );
 
     for (const githubRepo of repos) {
-        const savedRepo = await createRepository(savedUser.id, githubRepo.full_name);
+        const savedRepo = await upsertRepository(savedUser.id, githubRepo.full_name);
 
         const pulls: GitHubPull[] = await githubGetAll(
             token,
@@ -39,7 +39,7 @@ export async function importAccount(token: string) {
         );
         
         for (const pull of pulls) {
-            const savedPull = await createPullRequest(
+            const savedPull = await upsertPullRequest(
                 savedRepo.id,
                 pull.id,
                 pull.user.login,
@@ -53,7 +53,7 @@ export async function importAccount(token: string) {
             );
 
             for (const comment of comments) {
-                await createReviewComment(
+                await upsertReviewComment(
                     savedPull.id,
                     comment.id,
                     comment.user.login,
