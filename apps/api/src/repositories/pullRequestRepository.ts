@@ -28,8 +28,32 @@ export async function createPullRequest(
     const result = await pool.query(
         `INSERT INTO pull_requests
             (repository_id, github_id, author, created_at, title)
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING id, github_id, author, created_at, title`,
+         VALUES ($1, $2, $3, $4, $5)
+         RETURNING id, github_id, author, created_at, title`,
+        [repositoryId, githubId, author, createdAt, title],
+    );
+
+    return result.rows[0]
+}
+
+export async function upsertPullRequest(
+    repositoryId: number,
+    githubId: number,
+    author: string,
+    createdAt: string,
+    title: string
+) {
+    const result = await pool.query(
+        `INSERT INTO pull_requests
+            (repository_id, github_id, author, created_at, title)
+         VALUES ($1, $2, $3, $4, $5)
+         ON CONFLICT (github_id)
+         DO UPDATE SET
+             repository_id = EXCLUDED.repository_id,
+             author = EXCLUDED.author,
+             created_at = EXCLUDED.created_at,
+             title = EXCLUDED.title
+         RETURNING id, github_id, author, created_at, title`,
         [repositoryId, githubId, author, createdAt, title],
     );
 
