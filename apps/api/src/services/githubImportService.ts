@@ -28,7 +28,7 @@ export async function importAccount(token: string) {
 
     const repos: GitHubRepo[] = await githubGetAll(
         token,
-        "/user/repos?affiliation=owner",
+        "/user/repos?affiliation=owner&visibility=public",
     );
 
     for (const githubRepo of repos) {
