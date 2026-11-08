@@ -32,7 +32,7 @@ function nextPage(linkHeader: string | null) {
 
     for (const part of linkHeader.split(",")) {
         const match = part.match(/<([^>]+)>;\s*rel="next"/);
-        if (match !== null) {
+        if (match !== null && match[1] !== undefined) {
             return match[1];
         }
     }
@@ -52,4 +52,43 @@ export async function githubGetAll(token: string, path: string) {
     }
 
     return items;
+}
+
+function requiredEnv(name: string): string {
+    const value = process.env[name];
+
+    if (value === undefined || value === "") {
+        throw new Error(`Missing environment variable ${name}`);
+    }
+
+    return value;
+}
+
+export async function exchangeCode(code: string) {
+    const response = await fetch("https://github.com/login/oauth/access_token", {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            client_id: requiredEnv("GITHUB_CLIENT_ID"),
+            client_secret: requiredEnv("GITHUB_CLIENT_SECRET"),
+            code,
+            redirect_uri: requiredEnv("GITHUB_CALLBACK_URL"),
+        }),
+    });
+
+    if (!response.ok) {
+        const body = await response.text();
+        throw new Error(`GitHub ${response.status} for access token: ${body}`);
+    }
+
+    const payload = await response.json();
+
+    if (typeof payload.access_token !== "string" || payload.access_token === "") {
+        throw new Error("GitHub did not return an access token");
+    }
+
+    return payload.access_token;
 }
