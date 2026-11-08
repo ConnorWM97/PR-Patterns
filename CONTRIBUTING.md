@@ -64,9 +64,10 @@ docker start pr-patterns-db
 cd apps/api
 docker exec -i pr-patterns-db psql -U postgres -d pr_patterns < sql/000_init.sql
 docker exec -i pr-patterns-db psql -U postgres -d pr_patterns < sql/001_review_comments.sql
+docker exec -i pr-patterns-db psql -U postgres -d pr_patterns < sql/002_users.sql
 ```
 
-`000` and `001` use `CREATE TABLE IF NOT EXISTS`, so running them again skips tables that are already there.
+`000`, `001`, and `002` use `CREATE TABLE IF NOT EXISTS` and `CREATE UNIQUE INDEX IF NOT EXISTS`, so running them again skips objects that are already there.
 
 1. Install dependencies and start the API, from `apps/api`. Export the database settings in the same terminal before `npm run dev`.
 
