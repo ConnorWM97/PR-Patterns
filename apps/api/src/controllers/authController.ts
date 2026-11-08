@@ -33,12 +33,8 @@ function readCookie(cookieHeader: string | undefined, name: string) {
     return undefined;
 }
 
-export async function startGithubLogin(
-    request: FastifyRequest<{ Querystring: { private?: string } }>,
-    reply: FastifyReply,
-) {
+export async function startGithubLogin(_request: FastifyRequest, reply: FastifyReply) {
     const state = randomBytes(16).toString("hex");
-    const scope = request.query.private === "1" ? "repo" : "public_repo";
     reply.header(
         "Set-Cookie",
         `github_oauth_state=${state}; HttpOnly; SameSite=Lax; Path=/; Max-Age=600`,
@@ -47,7 +43,7 @@ export async function startGithubLogin(
     const url = new URL("https://github.com/login/oauth/authorize");
     url.searchParams.set("client_id", requiredEnv("GITHUB_CLIENT_ID"));
     url.searchParams.set("redirect_uri", requiredEnv("GITHUB_CALLBACK_URL"));
-    url.searchParams.set("scope", scope);
+    url.searchParams.set("scope", "public_repo");
     url.searchParams.set("state", state);
 
     return reply.redirect(url.toString());
