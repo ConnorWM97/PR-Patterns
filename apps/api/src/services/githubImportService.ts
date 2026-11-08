@@ -18,6 +18,7 @@ type GitHubComment = {
     id: number;
     body: string;
     created_at: string;
+    pull_request_url: string;
     user: { login: string };
 };
 
@@ -37,7 +38,9 @@ export async function importAccount(token: string) {
             token,
             `/repos/${githubRepo.full_name}/pulls?state=all`,
         );
-        
+
+        const pullIdsByNumber = new Map<number, number>();
+
         for (const pull of pulls) {
             const savedPull = await upsertPullRequest(
                 savedRepo.id,
@@ -46,23 +49,31 @@ export async function importAccount(token: string) {
                 pull.created_at,
                 pull.title,
             );
+            pullIdsByNumber.set(pull.number, savedPull.id);
+        }
 
-            const comments: GitHubComment[] = await githubGetAll(
-                token,
-                `/repos/${githubRepo.full_name}/pulls/${pull.number}/comments`,
-            );
+        const comments: GitHubComment[] = await githubGetAll(
+            token,
+            `/repos/${githubRepo.full_name}/pulls/comments`,
+        );
 
-            for (const comment of comments) {
-                await upsertReviewComment(
-                    savedPull.id,
-                    comment.id,
-                    comment.user.login,
-                    comment.created_at,
-                    comment.body,
-                );
+        for (const comment of comments) {
+            const pullNumber = Number(comment.pull_request_url.split("/").at(-1));
+            const pullRequestId = pullIdsByNumber.get(pullNumber);
+
+            if (pullRequestId === undefined) {
+                continue;
             }
+
+            await upsertReviewComment(
+                pullRequestId,
+                comment.id,
+                comment.user.login,
+                comment.created_at,
+                comment.body,
+            );
         }
     }
 
     return savedUser.id;
-}    
+}
