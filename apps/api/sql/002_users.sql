@@ -1,8 +1,7 @@
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     github_id BIGINT NOT NULL UNIQUE,
-    login TEXT NOT NULL,
-    access_token TEXT NOT NULL
+    login TEXT NOT NULL
 );
 
 BEGIN;
@@ -32,5 +31,29 @@ WHERE kept.user_id = duplicate.user_id
 
 CREATE UNIQUE INDEX IF NOT EXISTS repositories_user_id_name_key
     ON repositories (user_id, name);
+
+ALTER TABLE users DROP COLUMN IF EXISTS access_token;
+
+ALTER TABLE repositories ADD COLUMN IF NOT EXISTS github_id BIGINT;
+
+UPDATE repositories
+SET github_id = -id::bigint
+WHERE github_id IS NULL;
+
+ALTER TABLE repositories ALTER COLUMN github_id SET NOT NULL;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_constraint
+        WHERE conrelid = 'repositories'::regclass
+          AND conname = 'repositories_user_id_github_id_key'
+    ) THEN
+        ALTER TABLE repositories
+            ADD CONSTRAINT repositories_user_id_github_id_key
+            UNIQUE (user_id, github_id);
+    END IF;
+END $$;
 
 COMMIT;
