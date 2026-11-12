@@ -1,5 +1,5 @@
 import { upsertUser } from "../repositories/userRepository.js";
-import { upsertRepository } from "../repositories/repositoryRepository.js";
+import { upsertRepository, deleteRepositoriesExcept } from "../repositories/repositoryRepository.js";
 import { upsertPullRequest } from "../repositories/pullRequestRepository.js";
 import { upsertReviewComment } from "../repositories/reviewCommentRepository.js";
 import { githubGet, githubGetAll } from "../services/githubClient.js";
@@ -29,6 +29,10 @@ export async function importAccount(token: string) {
     const repos: GitHubRepo[] = await githubGetAll(
         token,
         "/user/repos?affiliation=owner&visibility=public",
+    );
+    await deleteRepositoriesExcept(
+        savedUser.id,
+        repos.map((githubRepo) => githubRepo.full_name),
     );
 
     for (const githubRepo of repos) {
