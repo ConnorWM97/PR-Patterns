@@ -24,7 +24,7 @@ type GitHubComment = {
 
 export async function importAccount(token: string) {
     const githubUser = await githubGet(token, "/user");
-    const savedUser = await upsertUser(githubUser.id, githubUser.login, token);
+    const savedUser = await upsertUser(githubUser.id, githubUser.login);
 
     const repos: GitHubRepo[] = await githubGetAll(
         token,

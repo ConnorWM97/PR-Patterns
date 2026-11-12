@@ -1,15 +1,14 @@
 import { pool } from "../db.js";
 
-export async function upsertUser(githubId: number, login: string, accessToken: string) {
+export async function upsertUser(githubId: number, login: string) {
     const result = await pool.query(
-        `INSERT INTO users (github_id, login, access_token)
-         Values ($1, $2, $3)
+        `INSERT INTO users (github_id, login)
+         Values ($1, $2)
          ON CONFLICT (github_id)
          DO UPDATE SET
-             login = EXCLUDED.login,
-             access_token = EXCLUDED.access_token
+             login = EXCLUDED.login
          RETURNING id, login`,
-         [githubId, login, accessToken],
+         [githubId, login],
     );
 
     return result.rows[0];

@@ -1,8 +1,7 @@
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     github_id BIGINT NOT NULL UNIQUE,
-    login TEXT NOT NULL,
-    access_token TEXT NOT NULL
+    login TEXT NOT NULL
 );
 
 BEGIN;
@@ -32,5 +31,7 @@ WHERE kept.user_id = duplicate.user_id
 
 CREATE UNIQUE INDEX IF NOT EXISTS repositories_user_id_name_key
     ON repositories (user_id, name);
+
+ALTER TABLE users DROP COLUMN IF EXISTS access_token;
 
 COMMIT;
