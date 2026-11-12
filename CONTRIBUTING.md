@@ -67,7 +67,7 @@ docker exec -i pr-patterns-db psql -U postgres -d pr_patterns < sql/001_review_c
 docker exec -i pr-patterns-db psql -U postgres -d pr_patterns < sql/002_users.sql
 ```
 
-`000`, `001`, and `002` use `CREATE TABLE IF NOT EXISTS` and `CREATE UNIQUE INDEX IF NOT EXISTS`, so running them again skips objects that are already there.
+`000`, `001`, and `002` are safe to run more than once. `CREATE TABLE IF NOT EXISTS` and `CREATE UNIQUE INDEX IF NOT EXISTS` skip objects that are already there. On a `pull_requests` or `review_comments` table created before `github_id`, `author`, and `created_at` existed, `000` and `001` add those columns and keep the existing rows: `github_id` becomes `-id` (unique, and distinct from real GitHub ids), `author` becomes `unknown`, and `created_at` becomes the Unix epoch. Those columns are then `NOT NULL`, and `github_id` gets a unique constraint.
 
 1. Install dependencies and start the API, from `apps/api`. Export the database settings in the same terminal before `npm run dev`.
 
