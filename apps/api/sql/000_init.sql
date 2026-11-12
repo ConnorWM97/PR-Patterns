@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS repositories (
 
 CREATE TABLE IF NOT EXISTS pull_requests (
     id SERIAL PRIMARY KEY,
-    repository_id INTEGER NOT NULL,
+    repository_id INTEGER NOT NULL REFERENCES repositories (id),
     github_id BIGINT NOT NULL UNIQUE,
     author TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL,
@@ -50,6 +50,35 @@ BEGIN
     ) THEN
         ALTER TABLE pull_requests
             ADD CONSTRAINT pull_requests_github_id_key UNIQUE (github_id);
+    END IF;
+END $$;
+
+DELETE FROM review_comments
+WHERE pull_request_id IN (
+    SELECT pull_requests.id
+    FROM pull_requests
+    LEFT JOIN repositories ON repositories.id = pull_requests.repository_id
+    WHERE repositories.id IS NULL
+);
+
+DELETE FROM pull_requests
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM repositories
+    WHERE repositories.id = pull_requests.repository_id
+);
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_constraint
+        WHERE conrelid = 'pull_requests'::regclass
+          AND conname = 'pull_requests_repository_id_fkey'
+    ) THEN
+        ALTER TABLE pull_requests
+            ADD CONSTRAINT pull_requests_repository_id_fkey
+            FOREIGN KEY (repository_id) REFERENCES repositories (id);
     END IF;
 END $$;
 
