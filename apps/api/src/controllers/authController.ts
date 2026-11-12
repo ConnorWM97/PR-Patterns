@@ -43,7 +43,6 @@ export async function startGithubLogin(_request: FastifyRequest, reply: FastifyR
     const url = new URL("https://github.com/login/oauth/authorize");
     url.searchParams.set("client_id", requiredEnv("GITHUB_CLIENT_ID"));
     url.searchParams.set("redirect_uri", requiredEnv("GITHUB_CALLBACK_URL"));
-    url.searchParams.set("scope", "public_repo");
     url.searchParams.set("state", state);
 
     return reply.redirect(url.toString());
