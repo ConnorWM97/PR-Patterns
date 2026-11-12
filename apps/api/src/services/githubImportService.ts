@@ -6,7 +6,7 @@ import { githubGet, githubGetAll } from "../services/githubClient.js";
 
 
 type GitHubUser = { id: number; login: string };
-type GitHubRepo = { full_name: string };
+type GitHubRepo = { id: number; full_name: string };
 type GitHubPull = {
     id: number;
     number: number;
@@ -30,13 +30,13 @@ export async function importAccount(token: string) {
         token,
         "/user/repos?affiliation=owner&visibility=public",
     );
-    await deleteRepositoriesExcept(
-        savedUser.id,
-        repos.map((githubRepo) => githubRepo.full_name),
-    );
 
     for (const githubRepo of repos) {
-        const savedRepo = await upsertRepository(savedUser.id, githubRepo.full_name);
+        const savedRepo = await upsertRepository(
+            savedUser.id,
+            githubRepo.id,
+            githubRepo.full_name,
+        );
 
         const pulls: GitHubPull[] = await githubGetAll(
             token,
@@ -78,6 +78,11 @@ export async function importAccount(token: string) {
             );
         }
     }
+
+    await deleteRepositoriesExcept(
+        savedUser.id,
+        repos.map((githubRepo) => githubRepo.id),
+    );
 
     return savedUser.id;
 }

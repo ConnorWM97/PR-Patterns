@@ -1,7 +1,9 @@
 CREATE TABLE IF NOT EXISTS repositories (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
-    name TEXT NOT NULL
+    github_id BIGINT NOT NULL,
+    name TEXT NOT NULL,
+    UNIQUE (user_id, github_id)
 );
 
 CREATE TABLE IF NOT EXISTS pull_requests (
