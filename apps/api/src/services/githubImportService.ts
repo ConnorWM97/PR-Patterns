@@ -12,14 +12,14 @@ type GitHubPull = {
     number: number;
     title: string;
     created_at: string;
-    user: { login: string };
+    user: { login: string } | null;
 };
 type GitHubComment = {
     id: number;
     body: string;
     created_at: string;
     pull_request_url: string;
-    user: { login: string };
+    user: { login: string } | null;
 };
 
 export async function importAccount(token: string) {
@@ -49,7 +49,7 @@ export async function importAccount(token: string) {
             const savedPull = await upsertPullRequest(
                 savedRepo.id,
                 pull.id,
-                pull.user.login,
+                pull.user?.login ?? "ghost",
                 pull.created_at,
                 pull.title,
             );
@@ -72,7 +72,7 @@ export async function importAccount(token: string) {
             await upsertReviewComment(
                 pullRequestId,
                 comment.id,
-                comment.user.login,
+                comment.user?.login ?? "ghost",
                 comment.created_at,
                 comment.body,
             );
