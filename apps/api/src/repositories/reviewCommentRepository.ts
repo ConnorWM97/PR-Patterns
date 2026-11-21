@@ -9,6 +9,38 @@ export async function findReviewCommentsByPullRequestId(pullRequestId: number) {
     return result.rows;
 }
 
+export async function findCommentsByRepositoryId(repositoryId: number) {
+    const result = await pool.query(
+        `SELECT review_comments.id,
+                review_comments.body,
+                review_comments.pull_request_id
+         FROM review_comments
+         JOIN pull_requests ON pull_requests.id = review_comments.pull_request_id
+         WHERE pull_requests.repository_id = $1
+           AND review_comments.author <> pull_requests.author
+         ORDER BY review_comments.id`,
+        [repositoryId],
+    );
+
+    return result.rows;
+}
+
+export async function findCommentsByAuthor(author: string) {
+    const result = await pool.query(
+        `SELECT review_comments.id,
+                review_comments.body,
+                review_comments.pull_request_id
+         FROM review_comments
+         JOIN pull_requests ON pull_requests.id = review_comments.pull_request_id
+         WHERE pull_requests.author = $1
+           AND review_comments.author <> pull_requests.author
+         ORDER BY review_comments.id`,
+        [author],
+    );
+
+    return result.rows;
+}
+
 export async function createReviewComment(
     pullRequestId: number,
     githubId: number,
