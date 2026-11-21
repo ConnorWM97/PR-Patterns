@@ -31,3 +31,67 @@ export function patternKey(body: string): string | null {
     }
     return unique.join(" ");
 }
+
+const EXAMPLE_LIMIT = 3;
+
+type CommentRow = {
+    id: number;
+    body: string;
+    pull_request_id: number;
+};
+
+export function groupComments(comments: CommentRow[]) {
+    const byKey = new Map<string, CommentRow[]>();
+
+    for (const comment of comments) {
+        const key = patternKey(comment.body);
+        if (key === null) {
+            continue;
+        }
+        const group = byKey.get(key) ?? [];
+        group.push(comment);
+        byKey.set(key, group);
+    }
+
+    const patterns = [];
+
+    for (const group of byKey.values()) {
+        const count = new Set(group.map((comment) => comment.pull_request_id)).size;
+        if (count < 2) {
+            continue;
+        }
+
+        const ordered = [...group].sort((a, b) => a.id - b.id);
+        const shortest = [...ordered].sort(
+            (a, b) => a.body.trim().length - b.body.trim().length || a.id - b.id,
+        )[0];
+
+        if (shortest === undefined) {
+            continue;
+        }
+
+        const label = shortest.body.trim();
+
+        const examples = [];
+        const seenPullRequests = new Set<number>();
+        for (const comment of ordered) {
+            if (seenPullRequests.has(comment.pull_request_id)) {
+                continue;
+            }
+            seenPullRequests.add(comment.pull_request_id);
+            examples.push({
+                id: comment.id,
+                pull_request_id: comment.pull_request_id,
+                body: comment.body,
+            });
+            if (examples.length === EXAMPLE_LIMIT) {
+                break;
+            }
+        }
+
+        patterns.push({ label, count, examples });
+    }
+
+    patterns.sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+    return patterns;
+}
