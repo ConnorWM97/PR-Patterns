@@ -17,4 +17,4 @@ GitHub API
 
 ## Status
 
-Early Development
+Early Development (v0.2.0). Phases 4–8 toward a personal product are in [ROADMAP.md](ROADMAP.md).

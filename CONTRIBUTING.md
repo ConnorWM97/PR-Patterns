@@ -21,7 +21,7 @@ for small bug fixes, documentation improvements, or minor enhancements, feel fre
 - Readable code over short code
 - Small, focused pull requests
 - Good documentation
-- Automated testing where practical
+- Test-driven development for behavior changes
 - Constructive code reviews
 
 
@@ -31,6 +31,19 @@ for small bug fixes, documentation improvements, or minor enhancements, feel fre
 - Is this easy to understand?
 - Would a new contributor understand this code several months from now?
 - Does this change make the project simpler or more complicated?
+- Did I write a failing test before the implementation?
+
+
+
+### Test-driven development
+
+From Phase 4 forward (see [ROADMAP.md](ROADMAP.md)), new behavior is built red → green → refactor:
+
+1. Write a failing test that names the behavior.
+2. Write the smallest code that makes it pass.
+3. Refactor with tests still green.
+
+Use unit tests for pure logic, in-process HTTP tests for route contracts, and the verify-api skill for end-to-end smoke when a running server is needed. Bugs get a regression test before the fix. Behavior changes on `develop` require tests that would have failed before the change.
 
 
 
@@ -100,8 +113,8 @@ Please keep pull requests focused on a single purpose.
 Before submitting, verify that:
 
 - Your code builds successfully.
-- Existing tests pass.
-- New functionality includes tests when appropriate.
+- Existing tests pass (`npm test` in the package you changed).
+- Behavior changes include tests written first (or with the change) that would fail without it.
 - Documentation has been updated if behavior has changed.
 - Pull request descriptions clearly explain the motivation behind the change.
 
