@@ -1,3 +1,8 @@
+import {
+    findCommentsByRepositoryId,
+    findCommentsByAuthor,
+} from "../repositories/reviewCommentRepository.js";
+
 const STOPWORDS = new Set([
     "a", "an", "the", "please", "can", "could", "you", "your",
     "this", "that", "for", "to", "of", "and", "it", "be", "is",
@@ -94,4 +99,14 @@ export function groupComments(comments: CommentRow[]) {
 
     patterns.sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
     return patterns;
+}
+
+export async function getPatterns(
+    scope: { repositoryId: number } | { author: string },
+) {
+    const comments = "repositoryId" in scope
+        ? await findCommentsByRepositoryId(scope.repositoryId)
+        : await findCommentsByAuthor(scope.author);
+
+    return groupComments(comments);
 }
