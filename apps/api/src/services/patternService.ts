@@ -1,4 +1,7 @@
-import { findComments } from "../repositories/reviewCommentRepository.js";
+import {
+    findCommentsByRepositoryId,
+    findCommentsByAuthor,
+} from "../repositories/reviewCommentRepository.js";
 
 const STOPWORDS = new Set([
     "a", "an", "the", "please", "can", "could", "you", "your",
@@ -8,6 +11,10 @@ const STOPWORDS = new Set([
 
 const SYNONYMS: Record<string, string> = {
     tests: "test",
+    testing: "test",
+    tested: "test",
+    adding: "add",
+    added: "add",
 };
 
 export function patternKey(body: string): string | null {
@@ -97,6 +104,9 @@ export function groupComments(comments: CommentRow[]) {
 export async function getPatterns(
     scope: { repositoryId: number } | { author: string },
 ) {
-    const comments = await findComments(scope);
+    const comments = "repositoryId" in scope
+        ? await findCommentsByRepositoryId(scope.repositoryId)
+        : await findCommentsByAuthor(scope.author);
+
     return groupComments(comments);
 }
