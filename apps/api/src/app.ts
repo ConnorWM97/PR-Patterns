@@ -4,6 +4,7 @@ import { repositoryRoutes } from "./routes/repositoryRoutes.js";
 import { pullRequestRoutes } from "./routes/pullRequestRoutes.js";
 import { reviewCommentRoutes } from './routes/reviewCommentRoutes.js';
 import { authRoutes } from './routes/authRoutes.js';
+import { patternRoutes } from './routes/patternRoutes.js';
 
 export const app = Fastify({ logger: true });
 
@@ -12,6 +13,7 @@ app.register(repositoryRoutes);
 app.register(pullRequestRoutes);
 app.register(reviewCommentRoutes);
 app.register(authRoutes);
+app.register(patternRoutes);
 async function start() {
     try {
         const port = Number(process.env.PORT ?? 3000);
