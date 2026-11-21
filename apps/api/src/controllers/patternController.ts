@@ -7,18 +7,18 @@ export async function getPatternList(
     }>,
     reply: FastifyReply,
 ) {
-    const hasRepository = request.query.repositoryId !== undefined;
-    const hasAuthor = request.query.author !== undefined;
+    const repositoryId = request.query.repositoryId;
+    const author = request.query.author;
 
-    if (hasRepository === hasAuthor) {
-        return reply.code(400).send({
-            message: "Provide a repositoryId or an author",
-        });
+    if (repositoryId !== undefined && author === undefined) {
+        return getPatterns({ repositoryId });
     }
 
-    if (hasRepository) {
-        return getPatterns({ repositoryId: request.query.repositoryId as number });
+    if (author !== undefined && repositoryId === undefined) {
+        return getPatterns({ author });
     }
 
-    return getPatterns({ author: request.query.author as string });
+    return reply.code(400).send({
+        message: "Provide a repositoryId or an author",
+    });
 }

@@ -9,33 +9,24 @@ export async function findReviewCommentsByPullRequestId(pullRequestId: number) {
     return result.rows;
 }
 
-export async function findCommentsByRepositoryId(repositoryId: number) {
+export async function findComments(
+    scope: { repositoryId: number } | { author: string },
+) {
+    const column = "repositoryId" in scope
+        ? "pull_requests.repository_id"
+        : "pull_requests.author";
+    const value = "repositoryId" in scope ? scope.repositoryId : scope.author;
+
     const result = await pool.query(
         `SELECT review_comments.id,
                 review_comments.body,
                 review_comments.pull_request_id
-        FROM review_comments
-        JOIN pull_requests ON pull_requests.id = review_comments.pull_request_id
-        WHERE pull_requests.repository_id = $1
-          AND review_comments.author <> pull_requests.author
+         FROM review_comments
+         JOIN pull_requests ON pull_requests.id = review_comments.pull_request_id
+         WHERE ${column} = $1
+           AND review_comments.author <> pull_requests.author
         ORDER BY review_comments.id`,
-        [repositoryId],
-    );
-
-    return result.rows;
-}
-
-export async function findCommentsByAuthor(author: string) {
-    const result = await pool.query(
-        `SELECT review_comments.id,
-                review_comments.body,
-                review_comments.pull_request_id
-        FROM review_comments
-        JOIN pull_requests ON pull_requests.id = review_comments.pull_request_id
-        WHERE pull_requests.author = $1
-          AND review_comments.author <> pull_requests.author
-        ORDER BY review_comments.id`,
-        [author],
+        [value],
     );
 
     return result.rows;
